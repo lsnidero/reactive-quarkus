@@ -1,0 +1,21 @@
+{
+  "number": 5432,
+  "iterations": 3,
+  "details": [
+    {
+      "index": 1,
+      "operation": "5432 – 2345",
+      "result": 3087
+    },
+    {
+      "index": 2,
+      "operation": "8730 – 0378",
+      "result": 8352
+    },
+    {
+      "index": 3,
+      "operation": "8532 – 2358",
+      "result": 6174
+    }
+  ]
+}
