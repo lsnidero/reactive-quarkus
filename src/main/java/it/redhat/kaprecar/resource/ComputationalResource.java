@@ -13,34 +13,23 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-@Path("/hello")
+@Path("/calculation")
 public class ComputationalResource {
 
-    CalculateService service;
     CacheService cacheService;
 
     ComputationalResource(CalculateService service, CacheService cacheService) {
-        this.service = service;
+
         this.cacheService = cacheService;
     }
 
-
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Uni<String> hello() {
-        return Uni.createFrom().item("Hello from Quarkus REST");
-    }
-
-
-    @GET
-    @Path("/calculation/{number}")
+    @Path("/{number}")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> calculate(@PathParam("number") int number) {
 
         return Panache.withTransaction(() ->
-                service.calculateIterations(number)
-                        .call(kaprecarComputation ->
-                                cacheService.insertInCache(kaprecarComputation))
+                cacheService.calculate(number)
         ).map(computation -> Response.ok(computation).build());
     }
 }
