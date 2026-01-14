@@ -1,12 +1,13 @@
 package it.redhat.kaprecar.service;
 
-import io.smallrye.mutiny.Uni;
 import it.redhat.kaprecar.domain.IterationDetail;
 import it.redhat.kaprecar.domain.KaprecarComputation;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.jboss.logging.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,15 +19,14 @@ public class CalculateService {
     private static final int KAPREKAR = 6174;
 
 
-    public Uni<KaprecarComputation> calculateIterations(int number) {
+    public KaprecarComputation calculateIterations(int number) {
         LOG.infof("Calculating kaprecar computations for number %s", number);
-        return Uni.createFrom().item(number).map(n -> {
-            List<IterationDetail> details = new ArrayList<>();
-            LOG.debugf("number %s will converge to Kaprekar constant in ...", number);
-            int iterations = convergeToKaprekar(number, 0, details);
-            LOG.debugf("...%s iterations!", iterations);
-            return new KaprecarComputation(number, iterations, details);
-        });
+        List<IterationDetail> details = new ArrayList<>();
+        LOG.debugf("number %s will converge to Kaprekar constant in ...", number);
+        int iterations = convergeToKaprekar(number, 0, details);
+        LOG.debugf("...%s iterations!", iterations);
+        return new KaprecarComputation(number, iterations, details);
+
     }
 
     private int convergeToKaprekar(int number, int iteration, List<IterationDetail> details) {

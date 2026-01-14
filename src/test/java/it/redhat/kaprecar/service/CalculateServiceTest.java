@@ -23,19 +23,11 @@ class CalculateServiceTest {
     @Test
     void areThreeIterations() throws IOException {
         KaprecarComputation expected = fromExample();
-        Uni<KaprecarComputation> kaprecarComputationUni = calc.calculateIterations(5432);
-
-        kaprecarComputationUni.subscribe().with(i -> {
-            assertAll("The object is the same of the expected one" ,() ->{
-                assertEquals(expected.number(), i.number());
-                assertEquals(expected.iterations(), i.iterations());
-            });
+        KaprecarComputation kaprecarComputationUni = calc.calculateIterations(5432);
+        assertAll("The object is the same of the expected one", () -> {
+            assertEquals(expected.number(), kaprecarComputationUni.number());
+            assertEquals(expected.iterations(), kaprecarComputationUni.iterations());
         });
-
-        //FIXME: this will be correct when I resolve the immutability problem of the list for the record
-        //UniAssertSubscriber<KaprecarComputation> subscriber = kaprecarComputationUni.subscribe().withSubscriber(UniAssertSubscriber.create());
-        //subscriber.assertCompleted().assertItem(expected);
-
     }
 
     private KaprecarComputation fromExample() throws IOException {

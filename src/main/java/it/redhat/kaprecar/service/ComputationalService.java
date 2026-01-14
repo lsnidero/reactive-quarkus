@@ -59,7 +59,7 @@ public class ComputationalService {
                 return Uni.createFrom().item(kaprecarComputation);
             } else {
                 LOG.infof("cache miss, calculate %d", number);
-                return calculateService.calculateIterations(number).call(computation -> insertInCache(computation));
+                return Uni.createFrom().item(calculateService.calculateIterations(number)).call(this::insertInCache);
             }
         });
     }
