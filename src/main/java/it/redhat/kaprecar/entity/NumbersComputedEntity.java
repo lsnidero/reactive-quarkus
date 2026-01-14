@@ -22,4 +22,5 @@ public class NumbersComputedEntity extends PanacheEntity {
         return find("computedNumber", number).firstResult();
     }
 
+
 }

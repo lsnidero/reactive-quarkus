@@ -1,26 +1,52 @@
 package it.redhat.kaprecar.service;
 
+import io.quarkus.hibernate.reactive.panache.Panache;
 import io.smallrye.mutiny.Uni;
 import it.redhat.kaprecar.domain.IterationDetail;
 import it.redhat.kaprecar.domain.KaprecarComputation;
 import it.redhat.kaprecar.entity.IterationEntity;
 import it.redhat.kaprecar.entity.NumbersComputedEntity;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.jboss.logging.Logger;
 
 import java.util.List;
+import java.util.concurrent.CompletionStage;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @ApplicationScoped
-public class CacheService {
-    private static final Logger LOG = Logger.getLogger(CacheService.class);
+public class ComputationalService {
+    private static final Logger LOG = Logger.getLogger(ComputationalService.class);
     private static final Pattern compile = Pattern.compile("([0-9]+) - ([0-9]+)");
 
     private CalculateService calculateService;
 
-    public CacheService(CalculateService calculateService) {
+    @Inject
+    @Channel("computations-out")
+    Emitter<String> emitter;
+
+
+    public ComputationalService(CalculateService calculateService) {
         this.calculateService = calculateService;
+    }
+
+
+    @Incoming("computations-in")
+    Uni<Void> executeCalculation(Message<String> numberMessage) {
+        LOG.infof("Received message for number ", numberMessage.getPayload());
+
+        return Panache.withTransaction(() ->
+                calculate(Integer.parseInt(numberMessage.getPayload())).replaceWithVoid());
+    }
+
+
+    public CompletionStage<Void> enqueue(int number) {
+        return emitter.send(String.valueOf(number));
     }
 
 
@@ -36,6 +62,10 @@ public class CacheService {
                 return calculateService.calculateIterations(number).call(computation -> insertInCache(computation));
             }
         });
+    }
+
+    public Uni<List<KaprecarComputation>> allComputed() {
+        return NumbersComputedEntity.<NumbersComputedEntity>listAll().map(list -> list.stream().map(ComputationalService::fromEntity).toList());
     }
 
 

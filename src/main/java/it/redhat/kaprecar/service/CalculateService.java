@@ -17,6 +17,7 @@ public class CalculateService {
 
     private static final int KAPREKAR = 6174;
 
+
     public Uni<KaprecarComputation> calculateIterations(int number) {
         LOG.infof("Calculating kaprecar computations for number %s", number);
         return Uni.createFrom().item(number).map(n -> {

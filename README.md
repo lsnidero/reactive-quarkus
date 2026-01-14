@@ -1,5 +1,41 @@
 # reactive-kaprecar
 
+The purpose of this project is to use the reactive paradigm.
+
+This project has two ways of working: 
+ - synchronous one
+ - asynchronous one 
+
+Everything is executed in a full reactive way.
+
+## Synchronous behaviour
+
+This execution mode exposes only one `GET` API `/calculation/{number}` where you need to insert a 4 digits number with at least 2 different digits.
+The output of the api is a JSON with the convergence to the Kaprekar’s constant https://en.wikipedia.org/wiki/Kaprekar%27s_routine .
+
+The internal logic of the project is the following when the API is invoked:
+ - [x] Validate input, the number needs to fulfill the constraints 
+ - [x] If the computation is already been executed in the past return the already calculated result
+ - [x] If the computation isn't already been executed, execute the calculation synchronously 
+
+
+
+## Asynchronous behaviour
+
+The asyncronous behavior is triggered from a idempotent `POST` to the same API. 
+
+- [x] execute a POST on `/calculation/{number}` in order to trigger the calculation
+- [x] send a message to a Kafka topic 
+
+The backend of the system should:
+- [x] Listen to the Kafka topic for a new computation to be executed
+- [x] Do a lookup in the database to check if the computation is already executed
+- [x] If is a new execution execute the computation and Save the result on the database
+
+
+
+
+
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
 If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.

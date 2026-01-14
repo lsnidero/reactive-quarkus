@@ -22,4 +22,5 @@ class ComputationalResourceTest {
                 .body("iterations", is(3));
     }
 
+
 }

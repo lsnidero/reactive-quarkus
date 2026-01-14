@@ -2,16 +2,14 @@ package it.redhat.kaprecar.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.groups.UniSubscribe;
-import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
 import it.redhat.kaprecar.domain.KaprecarComputation;
-import it.redhat.kaprecar.entity.NumbersComputedEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CalculateServiceTest {
 
